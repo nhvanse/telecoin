@@ -32,7 +32,7 @@ def __send_noti(bot: Bot, user_id, name, address, transaction: Dict):
     hash = transaction.get("hash")
     blockNumber = int(transaction.get("blockNumber"))
 
-    if (from_ == address):
+    if (str.lower(from_) == str.lower(address)):
         text = f"➖*{value} ETH* \nFROM [{name}](https://etherscan.io/address/{from_}) \n\nTO [{to_}](https://etherscan.io/address/{to_}) \t[[View in Etherscan](https://etherscan.io/tx/{hash})]"
     else:
         text = f"➕*{value} ETH* \nFROM [{from_}](https://etherscan.io/address/{from_}) \n\nTO [{name}](https://etherscan.io/address/{to_}) \t[[View in Etherscan](https://etherscan.io/tx/{hash})]"

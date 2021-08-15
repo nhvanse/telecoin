@@ -106,7 +106,7 @@ def handle_balance(update: Update, context: CallbackContext):
             address = wallet[3]
             balance = float(balancesDict.get(address)) / 10**18
             message += f"\n#{id} \nName: [{name}](https://etherscan.io/address/{address}) \nBalance: *{balance}* ETH \n"
-        
+
         context.bot.send_message(
             chat_id=update.effective_chat.id,
             text=message,
@@ -115,12 +115,12 @@ def handle_balance(update: Update, context: CallbackContext):
         )
 
     except Exception as ex:
-        logger.error("When get balances of addresses: " +str(addresses) + " Error: " +  str(ex))
+        logger.error("When get balances of addresses: " +
+                     str(addresses) + " Error: " + str(ex))
         context.bot.send_message(
             chat_id=update.effective_chat.id,
             text=f"Error while get balance from Etherscan"
         )
-
 
 
 def handle_get_wallets(update: Update, context: CallbackContext):
@@ -219,25 +219,13 @@ bot = updater.bot
 
 updater.start_polling()
 
-# START HEROKU
-# import os
-# PORT = int(os.environ.get('PORT', 5000))
-# updater.start_webhook(listen="0.0.0.0",
-#                           port=int(PORT),
-#                           url_path=BOT_TOKEN)
-# updater.bot.setWebhook('https://telecoinbot.herokuapp.com/' + BOT_TOKEN)
-
-#END HEROKU
-
-
-
-
 
 try:
     latest_block = get_latest_block()
     db.update_all_latest_block(latest_block)
 except Exception as ex:
-    logger.error("When start: Cant not update latest block, Exception: "+ str(ex))
+    logger.error(
+        "When start: Cant not update latest block, Exception: " + str(ex))
 
 while True:
     send_notis(bot)
