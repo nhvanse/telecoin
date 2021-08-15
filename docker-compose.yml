@@ -1,0 +1,13 @@
+version: 3
+services:
+  telecoinbot:
+    image: telecoinbot:1.0.0
+    build:
+        context: .
+        dockerfile: Dockerfile
+    container_name: telecoinbot
+    restart: always
+    working_dir: /app
+    volumes: 
+      - .:/app
+    command: python main.py
