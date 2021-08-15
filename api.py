@@ -2,7 +2,7 @@ from typing import Dict, List
 import logging
 import time
 
-from config import ETHERSCAN_TOKEN
+from config import ETHERSCAN_TOKEN, MIN_DURATION_BTW_REQUESTS
 import db
 
 from etherscan import Etherscan
@@ -78,7 +78,7 @@ def send_notis(bot: Bot):
             endTime = time.time()
             duration = endTime - beginTime
 
-            sleepDuration = 0 if duration >= 1 else 1 - duration
+            sleepDuration = 0 if duration >= MIN_DURATION_BTW_REQUESTS else MIN_DURATION_BTW_REQUESTS - duration
             time.sleep(sleepDuration)
     except Exception as ex:
         logger.error(str(ex))

@@ -8,4 +8,4 @@ ALL_WALLET = "all"
 CHECK_BALANCE = "balance"
 DELETE_WALLET_BY_ID = "delete_by_id"
 
-MAX_TIME_BETWEEN_REQUESTS = 1.0 # unit: second
+MIN_DURATION_BTW_REQUESTS = 1.0 # unit: second

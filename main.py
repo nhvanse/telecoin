@@ -223,6 +223,7 @@ updater.start_polling()
 try:
     latest_block = get_latest_block()
     db.update_all_latest_block(latest_block)
+    logger.info("Update all latest block to " + str(latest_block))
 except Exception as ex:
     logger.error(
         "When start: Cant not update latest block, Exception: " + str(ex))
