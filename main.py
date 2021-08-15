@@ -217,7 +217,22 @@ dispatcher.add_error_handler(handle_error)
 bot = updater.bot
 
 
-updater.start_polling()
+# updater.start_polling()
+
+# START HEROKU
+import os
+PORT = int(os.environ.get('PORT', 5000))
+updater.start_webhook(listen="0.0.0.0",
+                          port=int(PORT),
+                          url_path=BOT_TOKEN)
+updater.bot.setWebhook('https://telecoinbot.herokuapp.com/' + BOT_TOKEN)
+
+#END HEROKU
+
+
+
+
+
 try:
     latest_block = get_latest_block()
     db.update_all_latest_block(latest_block)
