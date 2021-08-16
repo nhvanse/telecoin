@@ -230,7 +230,6 @@ def tracking_eth(context):
     send_all_notis(bot)
 
     logger.info(str(time.time() - t0) + " S TO SEND ALL NOTIS\n\n")
-    time.sleep(0.2)
 
 
 job = updater.job_queue

@@ -65,6 +65,8 @@ def send_notis(bot: Bot, wallets):
                     str(len(addresses)) + " addresses")
 
         for wallet in wallets:
+            request_count = 0
+            begin_each_wallet_time = time.time()
             try:
                 user_id = wallet[1]
                 name = wallet[2]
@@ -75,8 +77,9 @@ def send_notis(bot: Bot, wallets):
 
                 if (new_balance is None):
                     logger.info(name + ": MUST check balance AGAIN")
+
+                    request_count += 1
                     new_balance = get_balance(address)
-                    time.sleep(1)
                     if (new_balance is None):
                         logger.error(name + ": Can NOT get balance AGAIN")
                         continue
@@ -90,6 +93,7 @@ def send_notis(bot: Bot, wallets):
                                 balance + " => " + new_balance)
 
                     timeBeginGetTxs = time.time()
+                    request_count += 1
                     res = eth.get_normal_txs_by_address(
                         address, latest_block + 1, None, "asc")
 
@@ -110,8 +114,7 @@ def send_notis(bot: Bot, wallets):
                     
                     logger.info(name + ": " + str(time.time() - t0) + " s to send all " +
                                 str(len(res)) + " telegram messages")
-                    time.sleep(1)
-
+                    
             except Exception as ex:
                 traceback.print_exc()
                 logger.error(str(wallet[2]) + ": " + str(ex))
@@ -119,6 +122,10 @@ def send_notis(bot: Bot, wallets):
                 db.update_balance(user_id, address, new_balance)
                 logger.info(name + ": Update balance to " + str(new_balance))
 
+            duration = time.time() - begin_each_wallet_time
+            sleep_duration = request_count if duration > request_count else request_count - duration
+            time.sleep(sleep_duration)
+        
         time.sleep(1)
 
     except Exception as ex:
