@@ -1,6 +1,7 @@
 from typing import Dict, List
 import logging
 import time
+import traceback 
 
 from config import ETHERSCAN_TOKEN, MIN_DURATION_BTW_REQUESTS
 import db
@@ -64,7 +65,6 @@ def send_notis(bot: Bot, wallets):
                     str(len(addresses)) + " addresses")
         
         for wallet in wallets:
-            beginTime = time.time()
             try:
                 user_id = wallet[1]
                 name = wallet[2]
@@ -102,10 +102,11 @@ def send_notis(bot: Bot, wallets):
                                 str(len(res)) + " telegram messages")
 
             except Exception as ex:
-                logger.info(str(wallet[2]) + ": " + str(ex))
-                
+                traceback.print_exc()
+                logger.error(str(wallet[2]) + ": " + str(ex))
+
                 db.update_balance(user_id, address, new_balance)
-                logger.info(name + ": Update balance to " + new_balance)
+                logger.info(name + ": Update balance to " + str(new_balance))
 
     except Exception as ex:
         logger.error(str(ex))
