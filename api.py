@@ -126,7 +126,7 @@ def send_notis(bot: Bot, wallets):
             sleep_duration = 0 if duration >= request_count else request_count - duration
             time.sleep(sleep_duration)
         
-        time.sleep(1)
+        time.sleep(0.6)
 
     except Exception as ex:
         logger.error(str(ex))
