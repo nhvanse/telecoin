@@ -73,6 +73,12 @@ def send_notis(bot: Bot, wallets):
                 balance = wallet[5]
                 new_balance = balancesDict.get(str.lower(address))
 
+                if (new_balance is None):
+                    new_balance = get_balance(address)
+                    if (new_balance is None):
+                        logger.error(name + ": Can NOT get balance")
+                        continue
+                    
                 if (str.lower(balance) == str.lower(new_balance)):
                     logger.info(name + ": not change balance " + new_balance)
 
