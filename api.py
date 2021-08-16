@@ -74,11 +74,12 @@ def send_notis(bot: Bot, wallets):
                 new_balance = balancesDict.get(str.lower(address))
 
                 if (new_balance is None):
+                    logger.info(name + ": MUST check balance AGAIN")
                     new_balance = get_balance(address)
                     if (new_balance is None):
                         logger.error(name + ": Can NOT get balance")
                         continue
-                    
+
                 if (str.lower(balance) == str.lower(new_balance)):
                     logger.info(name + ": not change balance " + new_balance)
 
@@ -88,7 +89,7 @@ def send_notis(bot: Bot, wallets):
                     timeBeginGetTxs = time.time()
                     res = eth.get_normal_txs_by_address(
                         address, latest_block + 1, None, "asc")
-
+                    
                     logger.info(name + ": get " + str(len(res)) + " txs " + str(time.time() - timeBeginGetTxs) + " s")
 
                     
@@ -104,6 +105,7 @@ def send_notis(bot: Bot, wallets):
                             logger.error(
                                 name + ": Can not send new transaction " + str(transaction.get("hash")) + "\tException: " + str(ex))
                     
+                    time.sleep(0.5)
                     logger.info(name + ": " + str(time.time() - t0) + " s to send all " +
                                 str(len(res)) + " telegram messages")
 
@@ -113,7 +115,9 @@ def send_notis(bot: Bot, wallets):
 
                 db.update_balance(user_id, address, new_balance)
                 logger.info(name + ": Update balance to " + str(new_balance))
-
+        
+        time.sleep(1)
+        
     except Exception as ex:
         logger.error(str(ex))
 
