@@ -9,7 +9,7 @@ from telegram import (
     Update, InlineKeyboardMarkup,
     InlineKeyboardButton
 )
-from api import send_notis, get_latest_block, get_balances
+from api import get_balance, send_notis, get_latest_block, get_balances
 from utils import is_valid_address
 
 from config import (
@@ -229,4 +229,6 @@ except Exception as ex:
         "When start: Cant not update latest block, Exception: " + str(ex))
 
 while True:
+    t0 = time.time()
     send_notis(bot)
+    logger.info(str(time.time() - t0) + " S TO SEND ALL NOTIS\n\n")

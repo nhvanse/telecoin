@@ -23,7 +23,7 @@ def create_tables():
             name        TEXT,
             address     TEXT NOT NULL,
             latest_block INTEGER DEFAULT 0,
-
+            balance TEXT,
             FOREIGN KEY (user_id) REFERENCES users (id),
             UNIQUE(user_id, address)
         )
@@ -71,8 +71,8 @@ def get_all_users():
 def add_wallet(user_id, name, address, latest_block):
     cur = con.cursor()
     cur.execute(
-        "INSERT INTO wallets(user_id, name, address, latest_block) VALUES (?, ?, ?, ?)",
-        (user_id, name, address, latest_block)
+        "INSERT INTO wallets(user_id, name, address, latest_block, balance) VALUES (?, ?, ?, ?, ?)",
+        (user_id, name, address, latest_block, "0")
     )
     cur.close()
     con.commit()
@@ -161,6 +161,13 @@ def update_latest_block(user_id, address, latest_block):
                 (latest_block, user_id, address))
     cur.close()
     con.commit()             
+
+def update_balance(user_id, address, balance):
+    cur = con.cursor()
+    cur.execute("UPDATE wallets SET balance = ? WHERE user_id=? AND address = ?",
+                (balance, user_id, address))
+    cur.close()
+    con.commit() 
 
 def update_all_latest_block(latest_block):
     cur = con.cursor()
