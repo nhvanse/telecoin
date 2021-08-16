@@ -9,7 +9,7 @@ from telegram import (
     Update, InlineKeyboardMarkup,
     InlineKeyboardButton
 )
-from api import get_balance, send_notis, get_latest_block, get_balances
+from api import send_all_notis, get_latest_block, get_balances
 from utils import is_valid_address
 
 from config import (
@@ -214,12 +214,6 @@ dispatcher.add_handler(CallbackQueryHandler(
 dispatcher.add_error_handler(handle_error)
 
 
-bot = updater.bot
-
-
-updater.start_polling()
-
-
 try:
     latest_block = get_latest_block()
     db.update_all_latest_block(latest_block)
@@ -228,8 +222,20 @@ except Exception as ex:
     logger.error(
         "When start: Cant not update latest block, Exception: " + str(ex))
 
-while True:
+
+def tracking_eth(context):
+    bot = context.bot
     t0 = time.time()
-    send_notis(bot)
+
+    send_all_notis(bot)
+
     logger.info(str(time.time() - t0) + " S TO SEND ALL NOTIS\n\n")
     time.sleep(0.2)
+
+
+job = updater.job_queue
+
+job.run_repeating(callback=tracking_eth, interval=1, first=3)
+
+updater.start_polling()
+updater.idle()
