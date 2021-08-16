@@ -1,7 +1,7 @@
 from typing import Dict, List
 import logging
 import time
-import traceback 
+import traceback
 
 from config import ETHERSCAN_TOKEN, MIN_DURATION_BTW_REQUESTS
 import db
@@ -63,7 +63,7 @@ def send_notis(bot: Bot, wallets):
         balancesDict = get_balances(addresses)
         logger.info(str(time.time() - t0) + " s to get balance of " +
                     str(len(addresses)) + " addresses")
-        
+
         for wallet in wallets:
             try:
                 user_id = wallet[1]
@@ -76,23 +76,25 @@ def send_notis(bot: Bot, wallets):
                 if (new_balance is None):
                     logger.info(name + ": MUST check balance AGAIN")
                     new_balance = get_balance(address)
+                    time.sleep(1)
                     if (new_balance is None):
-                        logger.error(name + ": Can NOT get balance")
+                        logger.error(name + ": Can NOT get balance AGAIN")
                         continue
+
 
                 if (str.lower(balance) == str.lower(new_balance)):
                     logger.info(name + ": not change balance " + new_balance)
 
                 else:
-                    logger.info(name + ": new balance " + balance + " => " + new_balance)
-                    
+                    logger.info(name + ": new balance " +
+                                balance + " => " + new_balance)
+
                     timeBeginGetTxs = time.time()
                     res = eth.get_normal_txs_by_address(
                         address, latest_block + 1, None, "asc")
-                    
-                    logger.info(name + ": get " + str(len(res)) + " txs " + str(time.time() - timeBeginGetTxs) + " s")
 
-                    
+                    logger.info(name + ": get " + str(len(res)) +
+                                " txs " + str(time.time() - timeBeginGetTxs) + " s")
 
                     t0 = time.time()
                     for transaction in res:
@@ -104,10 +106,11 @@ def send_notis(bot: Bot, wallets):
 
                             logger.error(
                                 name + ": Can not send new transaction " + str(transaction.get("hash")) + "\tException: " + str(ex))
+
                     
-                    time.sleep(0.5)
                     logger.info(name + ": " + str(time.time() - t0) + " s to send all " +
                                 str(len(res)) + " telegram messages")
+                    time.sleep(1)
 
             except Exception as ex:
                 traceback.print_exc()
@@ -115,9 +118,9 @@ def send_notis(bot: Bot, wallets):
 
                 db.update_balance(user_id, address, new_balance)
                 logger.info(name + ": Update balance to " + str(new_balance))
-        
+
         time.sleep(1)
-        
+
     except Exception as ex:
         logger.error(str(ex))
 
@@ -131,4 +134,3 @@ def send_all_notis(bot: Bot):
         sub_wallets = wallets[i: endId]
         send_notis(bot, sub_wallets)
         i = endId
-
