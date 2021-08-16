@@ -232,3 +232,4 @@ while True:
     t0 = time.time()
     send_notis(bot)
     logger.info(str(time.time() - t0) + " S TO SEND ALL NOTIS\n\n")
+    time.sleep(0.2)
