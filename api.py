@@ -86,9 +86,9 @@ def send_notis2(bot: Bot, wallets):
                 if (str.lower(balance) == str.lower(new_balance)):
                     logger.info(name + " not change balance " + new_balance)
 
-                    duration = time.time() - beginTime
-                    sleepDuration = 0 if duration >= MIN_DURATION_BTW_REQUESTS else MIN_DURATION_BTW_REQUESTS - duration
-                    time.sleep(sleepDuration)
+                    # duration = time.time() - beginTime
+                    # sleepDuration = 0 if duration >= MIN_DURATION_BTW_REQUESTS else MIN_DURATION_BTW_REQUESTS - duration
+                    # time.sleep(sleepDuration)
 
                 else:
                     logger.info("old: " + balance + " new: " + new_balance)
@@ -116,20 +116,20 @@ def send_notis2(bot: Bot, wallets):
                     logger.info(str(time.time() - t0) + " s to send " +
                                 str(len(res)) + " notis from " + str(name))
 
-                    duration = time.time() - beginTime
-                    sleepDuration = 0 if duration >= 2 * MIN_DURATION_BTW_REQUESTS else 2 * \
-                        MIN_DURATION_BTW_REQUESTS - duration
-                    time.sleep(sleepDuration)
+                    # duration = time.time() - beginTime
+                    # sleepDuration = 0 if duration >= 2 * MIN_DURATION_BTW_REQUESTS else 2 * \
+                    #     MIN_DURATION_BTW_REQUESTS - duration
+                    # time.sleep(sleepDuration)
 
             except Exception as ex:
                 # logger.error(f"When get txs by address {address} : " + str(ex))
                 logger.info(str(time.time() - beginTime) +
                             " s: " + str(wallet[2]) + " " + str(ex))
 
-                duration = time.time() - beginTime
-                sleepDuration = 0 if duration >= 2 * MIN_DURATION_BTW_REQUESTS else 2 * \
-                    MIN_DURATION_BTW_REQUESTS - duration
-                time.sleep(sleepDuration)
+                # duration = time.time() - beginTime
+                # sleepDuration = 0 if duration >= 2 * MIN_DURATION_BTW_REQUESTS else 2 * \
+                #     MIN_DURATION_BTW_REQUESTS - duration
+                # time.sleep(sleepDuration)
 
     except Exception as ex:
         logger.error(str(ex))
@@ -164,11 +164,11 @@ def send_notis1(bot: Bot):
             except Exception as ex:
                 logger.error(f"When get txs by address {address} : " + str(ex))
 
-            endTime = time.time()
-            duration = endTime - beginTime
+            # endTime = time.time()
+            # duration = endTime - beginTime
 
-            sleepDuration = 0 if duration >= MIN_DURATION_BTW_REQUESTS else MIN_DURATION_BTW_REQUESTS - duration
-            time.sleep(sleepDuration)
+            # sleepDuration = 0 if duration >= MIN_DURATION_BTW_REQUESTS else MIN_DURATION_BTW_REQUESTS - duration
+            # time.sleep(sleepDuration)
     except Exception as ex:
         logger.error(str(ex))
 
