@@ -87,7 +87,7 @@ def handle_balance(update: Update, context: CallbackContext):
     user_id = update.effective_user.id
     chat_id = update.effective_chat.id
 
-    wallets = db.get_user_wallets(user_id)
+    wallets = db.get_user_wallets(chat_id)
     addresses = [wallet[3] for wallet in wallets]
 
     if (len(wallets) == 0):
@@ -124,9 +124,10 @@ def handle_balance(update: Update, context: CallbackContext):
 
 
 def handle_get_wallets(update: Update, context: CallbackContext):
-    user_id = update.effective_user.id
+    # user_id = update.effective_user.id
+    chat_id = update.effective_chat.id
 
-    wallets = db.get_user_wallets(user_id)
+    wallets = db.get_user_wallets(chat_id)
 
     context.bot.send_message(
         chat_id=update.effective_chat.id,
@@ -140,7 +141,7 @@ def handle_get_wallets(update: Update, context: CallbackContext):
 def handle_new_wallet(update: Update, context: CallbackContext):
     args = context.args
     command = "/" + ADD_WALLET
-    user_id = update.effective_user.id
+    user_id = update.effective_chat.id
 
     if (len(args) != 2):
         context.bot.send_message(
@@ -185,7 +186,7 @@ def handle_inline_delete_wallet(update: Update, context: CallbackContext):
     data = update.callback_query.data
     wallet_id = int(data.split()[-1])
 
-    user_id = update.effective_user.id
+    user_id = update.effective_chat.id
 
     if (db.check_wallet_id_and_user_exists(wallet_id, user_id)):
         db.delete_wallet(wallet_id)
