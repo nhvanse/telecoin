@@ -1,6 +1,7 @@
 import time
 from typing import List
 import telegram
+from telegram import chat
 from telegram.ext import (
     Updater, CallbackContext,
     CommandHandler, CallbackQueryHandler
@@ -87,7 +88,7 @@ def handle_balance(update: Update, context: CallbackContext):
     user_id = update.effective_user.id
     chat_id = update.effective_chat.id
 
-    wallets = db.get_user_wallets(chat_id)
+    wallets = db.get_user_wallets(user_id, chat_id)
     addresses = [wallet[3] for wallet in wallets]
 
     if (len(wallets) == 0):
@@ -124,10 +125,10 @@ def handle_balance(update: Update, context: CallbackContext):
 
 
 def handle_get_wallets(update: Update, context: CallbackContext):
-    # user_id = update.effective_user.id
+    user_id = update.effective_user.id
     chat_id = update.effective_chat.id
 
-    wallets = db.get_user_wallets(chat_id)
+    wallets = db.get_user_wallets(user_id, chat_id)
 
     context.bot.send_message(
         chat_id=update.effective_chat.id,
@@ -141,43 +142,44 @@ def handle_get_wallets(update: Update, context: CallbackContext):
 def handle_new_wallet(update: Update, context: CallbackContext):
     args = context.args
     command = "/" + ADD_WALLET
-    user_id = update.effective_chat.id
+    user_id = update.effective_user.id
+    chat_id = update.effective_chat.id
 
     if (len(args) != 2):
         context.bot.send_message(
-            chat_id=update.effective_chat.id,
+            chat_id=chat_id,
             text=f"You need to provide *wallet name* and *address* after {command}\n"
             + f"*Example*: /{ADD_WALLET} eth1 0x41667520bb471d18ea59591bc2de11bd82762241",
             parse_mode=telegram.ParseMode.MARKDOWN_V2
         )
     else:
         wallet_name = args[0]
-        address = args[1]
+        address = str.lower(args[1])
         if (not is_valid_address(address)):
             context.bot.send_message(
-                chat_id=update.effective_chat.id,
+                chat_id=chat_id,
                 text=f"The wallet address <b>{address}</b> is INVALID",
                 parse_mode="HTML"
             )
-        elif (db.check_wallet_exists(user_id=user_id, address=address)):
+        elif (db.check_wallet_exists(user_id=user_id, address=address, chat_id=chat_id)):
             context.bot.send_message(
-                chat_id=update.effective_chat.id,
+                chat_id=chat_id,
                 text=f"The wallet address <b>{address}</b> already exists",
                 parse_mode="HTML"
             )
         else:
             try:
                 latest_block = get_latest_block()
-                db.add_wallet(user_id, wallet_name, address, latest_block)
+                db.add_wallet(user_id, wallet_name, address, latest_block, chat_id)
                 context.bot.send_message(
-                    chat_id=update.effective_chat.id,
+                    chat_id=chat_id,
                     text=f"Add wallet {wallet_name} successfully!\n"
                     + f"Please use /{ALL_WALLET} to list your wallets."
                 )
             except Exception as ex:
                 logger.error(str(ex))
                 context.bot.send_message(
-                    chat_id=update.effective_chat.id,
+                    chat_id=chat_id,
                     text=f"ERROR: Can not add wallet {address}"
                 )
 
@@ -186,11 +188,12 @@ def handle_inline_delete_wallet(update: Update, context: CallbackContext):
     data = update.callback_query.data
     wallet_id = int(data.split()[-1])
 
-    user_id = update.effective_chat.id
+    user_id = update.effective_user.id
+    chat_id = update.effective_chat.id
 
     if (db.check_wallet_id_and_user_exists(wallet_id, user_id)):
         db.delete_wallet(wallet_id)
-        wallets = db.get_user_wallets(user_id)
+        wallets = db.get_user_wallets(user_id, chat_id)
         update.callback_query.edit_message_text(
             text=view_wallets(wallets),
             reply_markup=get_wallets_markup(wallets),

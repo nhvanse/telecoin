@@ -1,5 +1,7 @@
 import sqlite3
 
+from telegram import chat
+
 from config import DB_FILE
 
 con = sqlite3.connect(DB_FILE, check_same_thread=False)
@@ -23,9 +25,8 @@ def create_tables():
             name        TEXT,
             address     TEXT NOT NULL,
             latest_block INTEGER DEFAULT 0,
-            balance TEXT,
-            FOREIGN KEY (user_id) REFERENCES users (id),
-            UNIQUE(user_id, address)
+            balance     TEXT,
+            chat_id     INTEGER NOT NULL
         )
     """)
     cur.close()
@@ -68,30 +69,20 @@ def get_all_users():
     return cur.fetchall()
 
 
-def add_wallet(user_id, name, address, latest_block):
+def add_wallet(user_id, name, address, latest_block, chat_id):
     cur = con.cursor()
     cur.execute(
-        "INSERT INTO wallets(user_id, name, address, latest_block, balance) VALUES (?, ?, ?, ?, ?)",
-        (user_id, name, address, latest_block, "0")
+        "INSERT INTO wallets(user_id, name, address, latest_block, balance, chat_id) VALUES (?, ?, ?, ?, ?, ?)",
+        (user_id, name, address, latest_block, "0", chat_id)
     )
     cur.close()
     con.commit()
 
 
-def check_wallet_exists(user_id, address):
+def check_wallet_exists(user_id, address, chat_id):
     cur = con.cursor()
     cur.execute(
-        "SELECT * FROM wallets WHERE user_id = ? AND address = ?", (user_id, address))
-
-    result = cur.fetchone()
-
-    return True if result is not None else False
-
-
-def check_wallet_name_exists(user_id, name):
-    cur = con.cursor()
-    cur.execute(
-        "SELECT * FROM wallets WHERE user_id = ? AND name = ?", (user_id, name))
+        "SELECT * FROM wallets WHERE user_id = ? AND address = ? AND chat_id=?", (user_id, address, chat_id))
 
     result = cur.fetchone()
 
@@ -113,9 +104,9 @@ def delete_wallet(id):
     cur.close()
     con.commit()
 
-def get_user_wallets(user_id):
+def get_user_wallets(user_id, chat_id):
     cur = con.cursor()
-    cur.execute("SELECT * FROM wallets WHERE user_id = ? ORDER BY id", (user_id,))
+    cur.execute("SELECT * FROM wallets WHERE user_id = ? AND chat_id=? ORDER BY id", (user_id, chat_id))
 
     return cur.fetchall()
 
@@ -125,49 +116,13 @@ def get_all_wallets():
 
     return cur.fetchall()
 
-def get_wallet(user_id, address):
+
+def update_latest_block(user_id, address, latest_block, chat_id):
     cur = con.cursor()
-    cur.execute(
-        "SELECT * FROM wallets WHERE user_id = ? AND address = ?", (user_id, address,))
-
-    return cur.fetchone()
-
-
-def get_wallet_by_name(user_id, name):
-    cur = con.cursor()
-    cur.execute(
-        "SELECT * FROM wallets WHERE user_id = ? AND name = ?", (user_id, name,))
-
-    return cur.fetchone()
-
-
-def update_wallet(user_id, name, address):
-    cur = con.cursor()
-    cur.execute("UPDATE wallets SET name = ? WHERE user_id=? AND address = ?",
-                (name, user_id, address))
-    cur.close()
-    con.commit()
-
-def get_latest_block(user_id, address):
-    cur = con.cursor()
-    cur.execute(
-        "SELECT latest_block FROM wallets WHERE user_id = ? AND address = ?", (user_id, address,))
-
-    return cur.fetchone()
-
-def update_latest_block(user_id, address, latest_block):
-    cur = con.cursor()
-    cur.execute("UPDATE wallets SET latest_block = ? WHERE user_id=? AND address = ?",
-                (latest_block, user_id, address))
+    cur.execute("UPDATE wallets SET latest_block = ? WHERE user_id=? AND address = ? AND chat_id=?",
+                (latest_block, user_id, address, chat_id))
     cur.close()
     con.commit()             
-
-def update_balance(user_id, address, balance):
-    cur = con.cursor()
-    cur.execute("UPDATE wallets SET balance = ? WHERE user_id=? AND address = ?",
-                (balance, user_id, address))
-    cur.close()
-    con.commit() 
 
 def update_all_latest_block(latest_block):
     cur = con.cursor()
