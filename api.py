@@ -55,7 +55,7 @@ def __send_noti(bot: Bot, user_id, name, address, transaction: Dict, transfers: 
 
     etherscan_view = f"[[View in Etherscan](https://etherscan.io/tx/{hash})]"
 
-    if ((len(transfers) > 0 and value > 0) or (len(transfers) == 0)):
+    if (value > 0):
         if (str.lower(from_) == str.lower(address)):
             text = f"[{name}](https://etherscan.io/address/{from_}) \n➖*{value} ETH* (Ethereum) \nTO [{format_address(to_)}](https://etherscan.io/address/{to_})"
         else:
