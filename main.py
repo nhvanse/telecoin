@@ -11,7 +11,7 @@ from telegram import (
     InlineKeyboardButton
 )
 from api import send_all_notis, get_latest_block, get_balances
-from utils import is_valid_address
+from utils import format_number, is_valid_address
 
 from config import (
     BOT_TOKEN,
@@ -106,7 +106,7 @@ def handle_balance(update: Update, context: CallbackContext):
             name = wallet[2]
             address = wallet[3]
             balance = float(balancesDict.get(address)) / 10**18
-            message += f"\n#{id} \nName: [{name}](https://etherscan.io/address/{address}) \nBalance: *{balance}* ETH \n"
+            message += f"\n#{id} \nName: [{name}](https://etherscan.io/address/{address}) \nBalance: *{format_number(balance)}* ETH \n"
 
         context.bot.send_message(
             chat_id=update.effective_chat.id,

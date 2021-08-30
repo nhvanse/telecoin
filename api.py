@@ -5,8 +5,9 @@ import traceback
 
 import etherscan
 
-from config import ETHERSCAN_TOKEN, MIN_DURATION_BTW_REQUESTS
+from config import ETHERSCAN_TOKEN, MIN_DURATION_BTW_REQUESTS, ROUND_NUMBER
 import db
+from utils import format_number
 
 from etherscan import Etherscan
 from telegram import Bot, chat
@@ -57,9 +58,9 @@ def __send_noti(bot: Bot, user_id, name, address, transaction: Dict, transfers: 
 
     if (value > 0):
         if (str.lower(from_) == str.lower(address)):
-            text = f"[{name}](https://etherscan.io/address/{from_}) \n➖*{value} ETH* (Ethereum) \nTO [{format_address(to_)}](https://etherscan.io/address/{to_})"
+            text = f"[{name}](https://etherscan.io/address/{from_}) \n➖*{format_number(value)} ETH* (Ethereum) \nTO [{format_address(to_)}](https://etherscan.io/address/{to_})"
         else:
-            text = f"[{name}](https://etherscan.io/address/{to_})   \n➕*{value} ETH* (Ethereum) \nFROM [{format_address(from_)}](https://etherscan.io/address/{from_})"
+            text = f"[{name}](https://etherscan.io/address/{to_})   \n➕*{format_number(value)} ETH* (Ethereum) \nFROM [{format_address(from_)}](https://etherscan.io/address/{from_})"
 
         bot.send_message(
             chat_id=chat_id,
@@ -82,10 +83,10 @@ def __send_noti(bot: Bot, user_id, name, address, transaction: Dict, transfers: 
                     continue
 
                 if(fromI == str.lower(address)):
-                    textI = f"[{name}](https://etherscan.io/address/{fromI}) \n➖*{valueI} ETH* (Ethereum) \nTO [{format_address(toI)}](https://etherscan.io/address/{toI})"
+                    textI = f"[{name}](https://etherscan.io/address/{format_number(fromI)}) \n➖*{valueI} ETH* (Ethereum) \nTO [{format_address(toI)}](https://etherscan.io/address/{toI})"
 
                 elif (toI == str.lower(address)):
-                    textI = f"[{name}](https://etherscan.io/address/{toI})   \n➕*{valueI} ETH* (Ethereum) \nFROM [{format_address(fromI)}](https://etherscan.io/address/{fromI})"
+                    textI = f"[{name}](https://etherscan.io/address/{toI})   \n➕*{format_number(valueI)} ETH* (Ethereum) \nFROM [{format_address(fromI)}](https://etherscan.io/address/{fromI})"
 
                 bot.send_message(
                     chat_id=chat_id,
@@ -116,11 +117,11 @@ def __send_noti(bot: Bot, user_id, name, address, transaction: Dict, transfers: 
             token_value = float(event.get("value")) / (10**token_decimal)
 
             if (str.lower(token_from) == str.lower(address)):
-                bonus_message = f"[{name}](https://etherscan.io/address/{token_from})  \n➖*{token_value} {token_symbol}* ([{token_name}](https://etherscan.io/address/{contract_address})) \nTO [{format_address(token_to)}](https://etherscan.io/address/{token_to}) "
+                bonus_message = f"[{name}](https://etherscan.io/address/{token_from})  \n➖*{format_number(token_value)} {token_symbol}* ([{token_name}](https://etherscan.io/address/{contract_address})) \nTO [{format_address(token_to)}](https://etherscan.io/address/{token_to}) "
             elif (str.lower(token_to) == str.lower(address)):
-                bonus_message = f"[{name}](https://etherscan.io/address/{token_to})    \n➕*{token_value} {token_symbol}* ([{token_name}](https://etherscan.io/address/{contract_address})) \nFROM [{format_address(token_from)}](https://etherscan.io/address/{token_from})"
+                bonus_message = f"[{name}](https://etherscan.io/address/{token_to})    \n➕*{format_number(token_value)} {token_symbol}* ([{token_name}](https://etherscan.io/address/{contract_address})) \nFROM [{format_address(token_from)}](https://etherscan.io/address/{token_from})"
             else:
-                bonus_message = f"[{name}](https://etherscan.io/address/{address})     \nTransfer *{token_value} {token_symbol}* ([{token_name}](https://etherscan.io/address/{contract_address})) \nFROM [{format_address(token_from)}](https://etherscan.io/address/{token_from}) \nTO [{format_address(token_to)}](https://etherscan.io/address/{token_to}) "
+                bonus_message = f"[{name}](https://etherscan.io/address/{address})     \nTransfer *{format_number(token_value)} {token_symbol}* ([{token_name}](https://etherscan.io/address/{contract_address})) \nFROM [{format_address(token_from)}](https://etherscan.io/address/{token_from}) \nTO [{format_address(token_to)}](https://etherscan.io/address/{token_to}) "
 
             bot.send_message(
                 chat_id=chat_id,
