@@ -4,7 +4,7 @@ A chat bot uses Telegram api and Etherscan to register ETH wallet balance change
 This is a small project for personal use only.
 ## Setup
 - Go [Telegram Bot Father](https://t.me/BotFather) to create a new bot, then copy the bot token and update the value in config.py
-- Go [Etherscan](https://etherscan.io) to register token, copy it and update the value in config.py
+- Go [Etherscan](https://etherscan.io) to register API token, copy it and update the value in config.py
 - Run `docker-compose up`
 ## Result
 - Add a new wallet: /new {wallet_name} {wallet_address}
