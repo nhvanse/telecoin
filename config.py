@@ -11,3 +11,5 @@ CHECK_BALANCE = "balance"
 DELETE_WALLET_BY_ID = "delete_by_id"
 
 MIN_DURATION_BTW_REQUESTS = 1.0 # unit: second
+
+ROUND_NUMBER = 3
