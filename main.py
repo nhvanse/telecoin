@@ -78,9 +78,10 @@ def handle_start(update: Update, context: CallbackContext):
 
     context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text=f"Welcom {first_name} to ETH bot.\n"
-        "To add new wallet, use:\n/add <wallet_name> <address>\n."
-        "To view all wallets, use:\n/all."
+        text=f"Welcom {first_name} to ETH bot.\n\n"
+        "To add new wallet, use:\n/new <wallet_name> <address>\n\n"
+        "To view all wallets, use:\n/all\n\n"
+        "To check balance, use:\n/balance"
     )
 
 
@@ -238,7 +239,7 @@ def tracking_eth(context):
 
 job = updater.job_queue
 
-job.run_repeating(callback=tracking_eth, interval=1, first=3)
+job.run_repeating(callback=tracking_eth, interval=30, first=3)
 
-updater.start_polling()
+updater.start_polling(poll_interval=0.5)
 updater.idle()
