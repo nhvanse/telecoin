@@ -1,4 +1,4 @@
-version: 3
+version: "3.0"
 services:
   telecoinbot:
     image: telecoinbot:1.0.0
