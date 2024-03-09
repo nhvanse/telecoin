@@ -8,8 +8,14 @@ This is a small project for personal use only.
 - Run `docker-compose up`
 ## Result
 - Add a new wallet: /new {wallet_name} {wallet_address}
-- Manage current wallets: /all
+- List all wallets: /all
+- Delete a wallet: Click on the trash icon
+- Check balance: /balance
 - Receive notifications when the wallet balance change
-<img width="984" alt="image" src="https://github.com/nhvanse/telecoin/assets/35824966/ac83cd9e-961f-4088-957c-c86f4e2c7f94">
+1. <img width="1348" alt="image" src="https://github.com/nhvanse/telecoin/assets/35824966/4e69dab9-f151-4642-a616-78e513a01085">
+
+2. <img width="1346" alt="image" src="https://github.com/nhvanse/telecoin/assets/35824966/a4a5c1e3-659b-41e5-894f-dc91b7931b91">
+
+
 
 
